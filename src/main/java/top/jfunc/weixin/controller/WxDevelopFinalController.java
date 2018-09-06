@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.OrderComparator;
 import org.springframework.web.bind.annotation.RestController;
+import top.jfunc.weixin.utils.SortUtil;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +49,7 @@ public class WxDevelopFinalController extends BaseWxDevelopController implements
 
         Collection<BaseMessageHandler> values = messageHandlerMap.values();
         List<BaseMessageHandler> handlers = new ArrayList<>(values);
-        sortPostProcessors(handlers);
+        SortUtil.sort(handlers);
 
         //责任链
         for (int i = handlers.size() - 1; i > 0; i--) {
@@ -92,13 +92,5 @@ public class WxDevelopFinalController extends BaseWxDevelopController implements
         }
         return toXml;
 
-    }
-
-    /**
-     * 按照Order接口或者注解排序
-     * @param messageHandlers 消息处理器
-     */
-    private static void sortPostProcessors(List<?> messageHandlers) {
-        Collections.sort(messageHandlers, OrderComparator.INSTANCE);
     }
 }
