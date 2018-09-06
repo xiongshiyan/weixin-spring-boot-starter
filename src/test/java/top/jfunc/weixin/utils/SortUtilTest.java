@@ -20,6 +20,7 @@ public class SortUtilTest {
         list.add(new Bean3());
         list.add(new Bean4());
         list.add(new Bean5());
+        SortUtil.sort(list);
         Assert.assertTrue(list.get(0) instanceof Bean3);
         Assert.assertTrue(list.get(1) instanceof Bean4);
         Assert.assertTrue(list.get(2) instanceof Bean1);
