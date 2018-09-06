@@ -1,4 +1,4 @@
-def VERSION = '1.8.0'
+def VERSION = '1.8.1'
 def ARTIFACT_ID = 'weixin-spring-boot-starter'
 def GROUP_ID = 'top.jfunc.weixin'
 def TYPE = 'jar'
