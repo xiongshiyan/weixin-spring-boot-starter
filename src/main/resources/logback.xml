@@ -1,0 +1,36 @@
+<configuration>
+    <property name="LOG_PATH" value="logs"/>
+    <property name="APP_NAME" value="weixin"/>
+    <contextName>${APP_NAME}</contextName>
+    <!-- 控制台输出 -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%contextName: %X{METHOD-INVOKE-KEY} %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %replace(%caller{1}){'(Caller(.+?)(?=\())|\r|\n|\s*|\t', ''} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!-- 按照每天生成日志文件 -->
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名, 每天一归档-->
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 单个日志文件最多 50MB, 30天的日志周期，最大不能超过20GB -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>50MB</maxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%contextName: %X{METHOD-INVOKE-KEY} %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %replace(%caller{1}){'(Caller(.+?)(?=\())|\r|\n|\s*|\t', ''} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="File"/>
+    </root>
+</configuration>
