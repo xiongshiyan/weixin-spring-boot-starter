@@ -2,7 +2,6 @@ package top.jfunc.weixin.controller;
 
 import com.jfinal.weixin.sdk.kit.MsgEncryptKit;
 import top.jfunc.weixin.handler.BaseMessageHandler;
-import top.jfunc.weixin.handler.FinalMessageHandler;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.msg.InMsgParser;
 import com.jfinal.weixin.sdk.msg.in.*;
@@ -12,12 +11,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.bind.annotation.RestController;
-import top.jfunc.weixin.utils.SortUtil;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+
+import top.jfunc.weixin.handler.MessageHandlerUtil;
 
 /**
  * 将消息处理器放到容器中即可，容器自动发现并排序组成责任链
@@ -40,25 +40,9 @@ public class WxDevelopFinalController extends BaseWxDevelopController implements
         logger.info("init...");
         //找到所有的消息处理器
         Map<String, BaseMessageHandler> messageHandlerMap = applicationContext.getBeansOfType(BaseMessageHandler.class);
-        //没有就默认处理
-        if(null == messageHandlerMap || 0 == messageHandlerMap.size()){
-            this.firstMessageHandler = FinalMessageHandler.sharedFinalMessageHandler();
-            return;
-        }
-        logger.info("find " + messageHandlerMap.size() + " message handlers , now combinate them to Chain of Responsibility");
 
-        Collection<BaseMessageHandler> values = messageHandlerMap.values();
-        List<BaseMessageHandler> handlers = new ArrayList<>(values);
-        SortUtil.sort(handlers);
-
-        //责任链
-        for (int i = handlers.size() - 1; i > 0; i--) {
-            BaseMessageHandler nextMessageHandler = handlers.get(i);
-            logger.info(nextMessageHandler + " is the next of " + handlers.get(i-1));
-            handlers.get(i-1).setNextMessageHandler(nextMessageHandler);
-        }
-
-        firstMessageHandler = handlers.get(0);
+        //组装消息处理器链
+        this.firstMessageHandler = MessageHandlerUtil.doHandlerChain(messageHandlerMap);
     }
 
     @Override
