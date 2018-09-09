@@ -1,6 +1,7 @@
 package top.jfunc.weixin.controller;
 
-import com.jfinal.weixin.sdk.kit.MsgEncryptKit;
+import com.jfinal.weixin.sdk.api.ApiConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import top.jfunc.weixin.handler.BaseMessageHandler;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.msg.InMsgParser;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 import top.jfunc.weixin.handler.MessageHandlerUtil;
+import top.jfunc.weixin.utils.MsgEncryptKit;
 
 /**
  * 将消息处理器放到容器中即可，容器自动发现并排序组成责任链
@@ -29,6 +31,9 @@ public class WxDevelopFinalController extends BaseWxDevelopController implements
 
     private ApplicationContext applicationContext;
     private BaseMessageHandler firstMessageHandler;
+
+    @Autowired
+    private ApiConfig apiConfig;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -59,7 +64,8 @@ public class WxDevelopFinalController extends BaseWxDevelopController implements
             xml = MsgEncryptKit.decrypt(xml,
                     request.getParameter(TIMESTAMP),
                     request.getParameter(NONCE),
-                    request.getParameter("msg_signature"));
+                    request.getParameter("msg_signature"),
+                    apiConfig);
         }
         logger.info(xml);
 
@@ -72,7 +78,8 @@ public class WxDevelopFinalController extends BaseWxDevelopController implements
         if(messageEncrypt){
             toXml = MsgEncryptKit.encrypt(toXml,
                     request.getParameter(TIMESTAMP),
-                    request.getParameter(NONCE));
+                    request.getParameter(NONCE),
+                    apiConfig);
         }
         return toXml;
 

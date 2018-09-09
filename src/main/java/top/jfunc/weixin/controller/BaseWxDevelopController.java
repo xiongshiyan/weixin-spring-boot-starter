@@ -1,6 +1,8 @@
 package top.jfunc.weixin.controller;
 
-import com.jfinal.weixin.sdk.kit.MsgEncryptKit;
+import com.jfinal.weixin.sdk.api.ApiConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import top.jfunc.weixin.utils.MsgEncryptKit;
 import top.jfunc.weixin.utils.Signature;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.iot.msg.InEquDataMsg;
@@ -30,7 +32,8 @@ public abstract class BaseWxDevelopController {
     public static final String TIMESTAMP = "timestamp";
     public static final String NONCE     = "nonce";
     public static final String ECHO_STR  = "echostr";
-
+    @Autowired
+    private ApiConfig apiConfig;
     /**
      * 是否需要对微信消息加解密
      */
@@ -77,7 +80,8 @@ public abstract class BaseWxDevelopController {
             xml = MsgEncryptKit.decrypt(xml,
                     request.getParameter(TIMESTAMP),
                     request.getParameter(NONCE),
-                    request.getParameter("msg_signature"));
+                    request.getParameter("msg_signature") ,
+                    apiConfig);
         }
 
         InMsg msg = InMsgParser.parse(xml);
