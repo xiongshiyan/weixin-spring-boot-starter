@@ -39,9 +39,7 @@ repositories {
 }
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:1.5.7.RELEASE")
-    compile('com.jfinal:jfinal-weixin:1.9'){
-        exclude group:'com.jfinal'
-    }
+    compile('com.jfinal:jfinal-weixin:1.9')
 
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
