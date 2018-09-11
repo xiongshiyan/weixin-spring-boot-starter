@@ -1,4 +1,4 @@
-def VERSION = '1.8.1'
+def VERSION = '1.8.2'
 def ARTIFACT_ID = 'weixin-spring-boot-starter'
 def GROUP_ID = 'top.jfunc.weixin'
 def TYPE = 'jar'
@@ -39,7 +39,9 @@ repositories {
 }
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:1.5.7.RELEASE")
-    compile group: 'com.jfinal', name: 'jfinal-weixin', version: '1.9'
+    compile('com.jfinal:jfinal-weixin:1.9'){
+        exclude group:'com.jfinal'
+    }
 
 
     testCompile group: 'junit', name: 'junit', version: '4.12'

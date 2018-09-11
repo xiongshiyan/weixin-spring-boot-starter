@@ -1,10 +1,8 @@
 package top.jfunc.weixin.controller;
 
-import com.jfinal.weixin.sdk.api.ApiConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import top.jfunc.weixin.utils.MsgEncryptKit;
-import top.jfunc.weixin.utils.Signature;
-import com.jfinal.kit.HttpKit;
+import com.jfinal.weixin.sdk.api.ApiConfigKit;
+import com.jfinal.weixin.sdk.kit.MsgEncryptKit;
+import com.jfinal.weixin.sdk.kit.SignatureCheckKit;
 import com.jfinal.weixin.iot.msg.InEquDataMsg;
 import com.jfinal.weixin.iot.msg.InEqubindEvent;
 import com.jfinal.weixin.sdk.msg.InMsgParser;
@@ -14,7 +12,7 @@ import com.jfinal.weixin.sdk.msg.in.event.*;
 import com.jfinal.weixin.sdk.msg.in.speech_recognition.InSpeechRecognitionResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -25,22 +23,13 @@ import javax.servlet.http.HttpServletResponse;
  * 这是微信所有消息的总入口，需要在微信公众号后台配置URL
  * @author xiongshiyan at 2018/7/26 , contact me with email yanshixiong@126.com or phone 15208384257
  */
-@RequestMapping("${weixin.entry.url:/open/wx/develop}")
+@RequestMapping("${spring.weixin.urlPatterns:/open/wx/develop}")
 public abstract class BaseWxDevelopController {
 
     public static final String SIGNATURE = "signature";
     public static final String TIMESTAMP = "timestamp";
     public static final String NONCE     = "nonce";
     public static final String ECHO_STR  = "echostr";
-    @Autowired
-    private ApiConfig apiConfig;
-    /**
-     * 是否需要对微信消息加解密
-     */
-    @Value("${weixin.messageEncrypt:false}")
-    protected boolean messageEncrypt;
-    @Value("${weixin.entry.url.token:weixintoken}")
-    private String token;
     private static final Logger logger = LoggerFactory.getLogger(BaseWxDevelopController.class);
 
     @RequestMapping(value = "",method ={ RequestMethod.GET})
@@ -56,7 +45,7 @@ public abstract class BaseWxDevelopController {
         String echostr = request.getParameter(ECHO_STR);
 
         // 通过检验signature 对请求进行校验，若校验成功则原样返回echostr，表示接入成功，否则接入失败
-        if (Signature.checkSignature(token, signature, timestamp, nonce)) {
+        if (SignatureCheckKit.me.checkSignature(signature, timestamp, nonce)) {
             return echostr;
         }else {
             return "你不是微信服务器，请自重！！";
@@ -67,21 +56,25 @@ public abstract class BaseWxDevelopController {
      * 以下是jfianl-weixin的处理方式 WxDevelopFinalController利用责任链，就有更好的处理方式
      */
     @RequestMapping(value = "",method ={ RequestMethod.POST})
-    public String develop(HttpServletRequest request , HttpServletResponse response) throws Exception{
+    public String develop(@RequestBody String xml , HttpServletRequest request , HttpServletResponse response) throws Exception{
         //将请求、响应的编码均设置为UTF-8（防止中文乱码）
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/xml;charset=utf-8");
 
-        String xml = HttpKit.readData(request);
-        logger.info(xml);
-        //对消息解密
-        if(messageEncrypt){
+        if (null == xml || "".equals(xml)) {
+            throw new RuntimeException("请不要在浏览器中请求该连接,调试请查看WIKI:http://git.oschina.net/jfinal/jfinal-weixin/wikis/JFinal-weixin-demo%E5%92%8C%E8%B0%83%E8%AF%95");
+        }
+
+        // 是否需要解密消息
+        if (ApiConfigKit.getApiConfig().isEncryptMessage()) {
             xml = MsgEncryptKit.decrypt(xml,
                     request.getParameter(TIMESTAMP),
                     request.getParameter(NONCE),
-                    request.getParameter("msg_signature") ,
-                    apiConfig);
+                    request.getParameter("msg_signature"));
+        }
+        if (ApiConfigKit.isDevMode()) {
+            logger.info(xml);
         }
 
         InMsg msg = InMsgParser.parse(xml);
@@ -161,10 +154,6 @@ public abstract class BaseWxDevelopController {
 
         return "error";
     }
-    public String getInMsgXml(HttpServletRequest request) {
-        return HttpKit.readData(request);
-    }
-
     /**
      * 处理接收到的文本消息
      * @param inTextMsg 处理接收到的文本消息
