@@ -1,6 +1,7 @@
 package top.jfunc.weixin.config;
 
 import com.jfinal.weixin.sdk.api.ApiConfig;
+import com.jfinal.wxaapp.WxaConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -106,5 +107,19 @@ public class WeixinProperties {
 
     public void setJsonType(String jsonType) {
         this.jsonType = jsonType;
+    }
+
+    @Override
+    public String toString() {
+        return "WeixinProperties{" +
+                "urlPatterns='" + urlPatterns + '\'' +
+                ", devMode=" + devMode +
+                ", accessTokenCache='" + accessTokenCache + '\'' +
+                ", appIdKey='" + appIdKey + '\'' +
+                ", wxConfigs=" + wxConfigs +
+                ", wxaConfig=" + wxaConfig +
+                ", wxaMsgParser=" + wxaMsgParser +
+                ", jsonType='" + jsonType + '\'' +
+                '}';
     }
 }
