@@ -1,9 +1,7 @@
 package top.jfunc.weixin.config;
 
-import com.jfinal.json.JacksonFactory;
 import com.jfinal.weixin.sdk.api.ApiConfig;
 import com.jfinal.weixin.sdk.api.ApiConfigKit;
-import com.jfinal.weixin.sdk.utils.JsonUtils;
 import com.jfinal.wxaapp.WxaConfig;
 import com.jfinal.wxaapp.WxaConfigKit;
 import org.slf4j.Logger;
