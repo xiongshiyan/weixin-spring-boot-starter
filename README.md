@@ -20,6 +20,7 @@ compile("top.jfunc.weixin:weixin-spring-boot-starter:1.8.2")
 
 #### 例子
 配置参见 WeixinProperties.java类
+
 spring.weixin.wxConfigs[0].appId=xxxxxxx
 
 spring.weixin.wxConfigs[0].appSecret=xxxxxxx
