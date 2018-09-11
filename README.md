@@ -9,7 +9,7 @@
 
 #### 安装教程
 
-compile("top.jfunc.weixin:weixin-spring-boot-starter:1.8.0")
+compile("top.jfunc.weixin:weixin-spring-boot-starter:1.8.2")
 
 #### 使用说明
 
@@ -20,10 +20,12 @@ compile("top.jfunc.weixin:weixin-spring-boot-starter:1.8.0")
 
 #### 例子
 spring.weixin.wxConfigs[0].appId=xxxxxxx
+
 spring.weixin.wxConfigs[0].appSecret=xxxxxxx
+
 spring.weixin.wxConfigs[0].token=xxxxxxxxxxxx
 
-````
+```
 @Component
 @Order(1)
 public class TextMessageHandler extends BaseMessageHandler{
@@ -38,7 +40,8 @@ public class TextMessageHandler extends BaseMessageHandler{
     }
 }
 ```
-````
+
+```
 @Component
 @Order(3)
 public class LocationMessageHandler extends BaseMessageHandler{
@@ -54,7 +57,8 @@ public class LocationMessageHandler extends BaseMessageHandler{
     }
 }
 ```
-````
+
+```
 @Component
 @Order(2)
 public class VoiceMessageHandler extends BaseMessageHandler{
