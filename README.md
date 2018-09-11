@@ -13,12 +13,13 @@ compile("top.jfunc.weixin:weixin-spring-boot-starter:1.8.2")
 
 #### 使用说明
 
-首先在配置文件中配置微信的开发入口 weixin.entry.url , 默认为 /open/wx/develop .
+首先在配置文件中配置微信的开发入口 spring.weixin.urlPatterns , 默认为 /open/wx/develop .
 ##### <1>.~~使用注解 EnableWeixinController 导入 WxDevelopFinalController ,~~ 编写消息处理器并放入容器中 , 继承于 BaseMessageHandler.
 ##### <2>.不使用注解 , 自己编写 Controller 继承于 BaseWxDevelopController 复写相关的方法并放入容器中即可.
 
 
 #### 例子
+配置参见 WeixinProperties.java类
 spring.weixin.wxConfigs[0].appId=xxxxxxx
 
 spring.weixin.wxConfigs[0].appSecret=xxxxxxx
