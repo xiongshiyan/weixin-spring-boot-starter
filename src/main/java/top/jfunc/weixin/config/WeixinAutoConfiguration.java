@@ -17,7 +17,6 @@ import top.jfunc.weixin.controller.WxDevelopFinalController;
  * @author xiongshiyan
  */
 @Configuration
-@ConditionalOnMissingBean
 @EnableConfigurationProperties(WeixinProperties.class)
 public class WeixinAutoConfiguration {
 	@Autowired
@@ -31,6 +30,7 @@ public class WeixinAutoConfiguration {
     }
 
 	@Bean
+    @ConditionalOnMissingBean
 	public WxDevelopFinalController wxDevelopFinalController(){
 		return new WxDevelopFinalController();
 	}
